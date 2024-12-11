@@ -38,7 +38,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 # Настройка базы данных MySQL
-SQLALCHEMY_DATABASE_URL = "mysql+pymysql://isp_p_Katcion:12345@77.91.86.135/isp_p_Katcion"
+SQLALCHEMY_DATABASE_URL = "mysql+pymysql://isp_p_Katcion:12345@localhost/isp_p_Katcion"
 SECRET_KEY = "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
@@ -115,14 +115,14 @@ def get_db():
 def get_user(username: str, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.username == username).first()
     if user is None:
-        raise HTTPException(status_code=404, detail="User not found")
+        raise HTTPException(status_code=404, detail="Пользователь не найден")
     return user
 
 
 async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)], db: Session = Depends(get_db)):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Could not validate credentials",
+        detail="Не удалось проверить учетные данные",
         headers={"WWW-Authenticate": "Bearer"}, )
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
@@ -140,7 +140,7 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)], db: Se
 
 async def get_current_active_user(current_user: Annotated[User, Depends(get_current_user)]):
     if current_user.disabled:
-        raise HTTPException(status_code=400, detail="Inactive user")
+        raise HTTPException(status_code=400, detail="Неактивный пользователь")
     return current_user
 
 
@@ -196,7 +196,7 @@ def fake_decode_token(token: str, db: Session):
 def get_users(db: Session = Depends(get_db)):
     users = db.query(User).all()
     if not users:
-        raise HTTPException(status_code=404, detail="Users not found")
+        raise HTTPException(status_code=404, detail="Пользователи не найдены")
     return users
 
 
@@ -217,7 +217,7 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
         return db_user
     except IntegrityError:
         db.rollback()
-        raise HTTPException(status_code=400, detail="Username or Email already registered")
+        raise HTTPException(status_code=400, detail="Имя пользователя или Email уже зарегистрированы")
 
 
 # Маршрут для удаления пользователя по ID
@@ -226,7 +226,7 @@ async def delete_user(user_id: int, current_user: Annotated[User, Depends(get_cu
                       db: Session = Depends(get_db)):
     user = db.query(User).filter(User.id == user_id).first()
     if user is None:
-        raise HTTPException(status_code=404, detail="User not found")
+        raise HTTPException(status_code=404, detail="Пользователь не найден")
     db.delete(user)
     db.commit()
     return user
@@ -253,7 +253,7 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect username or password",
+            detail="Неверное имя пользователя или пароль",
             headers={"WWW-Authenticate": "Bearer"}, )
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
@@ -266,7 +266,7 @@ async def update_user(user_id: int, user_update: UserUpdate,
                       current_user: Annotated[User, Depends(get_current_active_user)], db: Session = Depends(get_db)):
     user = db.query(User).filter(User.id == user_id).first()
     if user is None:
-        raise HTTPException(status_code=404, detail="User not found")
+        raise HTTPException(status_code=404, detail="Пользователь не найден")
     if user_update.username:
         user.username = user_update.username
     if user_update.email:
@@ -283,7 +283,7 @@ async def update_user(user_id: int, user_update: UserUpdate,
         return user
     except IntegrityError:
         db.rollback()
-        raise HTTPException(status_code=400, detail="Username or Email already registered")
+        raise HTTPException(status_code=400, detail="Имя пользователя или Email уже зарегистрированы")
 
 
 @app.post("/register/", response_model=UserResponse)
@@ -302,7 +302,7 @@ async def register_user(user: UserCreate, current_user: Annotated[User, Depends(
         return db_user
     except IntegrityError:
         db.rollback()
-        raise HTTPException(status_code=400, detail="Username or Email already registered")
+        raise HTTPException(status_code=400, detail="Имя пользователя или Email уже зарегистрированы")
 
 
 @app.get("/", response_class=HTMLResponse)
