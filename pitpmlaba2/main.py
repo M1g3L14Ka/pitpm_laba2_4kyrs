@@ -24,6 +24,8 @@ origins = [
     "http://localhost",
     "http://localhost:8080",
 ]
+
+# Добавление CORS middleware
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -38,9 +40,9 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 # Настройка базы данных MySQL
-SQLALCHEMY_DATABASE_URL = "mysql+pymysql://isp_p_Katcion:12345@localhost/isp_p_Katcion"
-SECRET_KEY = "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"
-ALGORITHM = "HS256"
+SQLALCHEMY_DATABASE_URL = "mysql+pymysql://isp_p_Katcion:1234@localhost/isp_p_Katcion"
+SECRET_KEY = "24u85e094fff6ca55c818166b8a9563b93f7249f6f0f4caa6cf63b45e8d345"
+ALGORITHM = "HS124"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
@@ -59,11 +61,9 @@ class User(Base):
     disabled = Column(Boolean, default=False)
 
 
-# Создание таблиц в базе данных
 Base.metadata.create_all(bind=engine)
 
 
-# Определение Pydantic модели для пользователя
 class UserCreate(BaseModel):
     username: str
     email: str
@@ -239,7 +239,7 @@ async def read_items(token: Annotated[str, Depends(oauth2_scheme)]):
 
 def fake_decode_token(token):
     return User(
-        username=token + "fakedecoded", email="john@example.com", full_name="John Doe")
+        username=token + "fakedecoded", email="polly@mail.ru", full_name="Polly Molly")
 
 
 @app.get("/users/me", response_model=UserResponse)

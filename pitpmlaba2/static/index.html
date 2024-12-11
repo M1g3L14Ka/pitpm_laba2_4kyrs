@@ -97,75 +97,75 @@
 </head>
 <body>
     <div class="container">
-        <h2>User Management</h2>
+        <h2>Управление пользователями</h2>
 
-        <h3>Create User</h3>
+        <h3>Добавить нового пользователя</h3>
         <div class="form-group">
-            <label for="create-username">Username</label>
+            <label for="create-username">Ваше имя</label>
             <input type="text" id="create-username" name="create-username" required>
         </div>
         <div class="form-group">
-            <label for="create-email">Email</label>
+            <label for="create-email">Почта</label>
             <input type="email" id="create-email" name="create-email" required>
         </div>
         <div class="form-group">
-            <label for="create-fullname">Full Name</label>
+            <label for="create-fullname">Полное имя</label>
             <input type="text" id="create-fullname" name="create-fullname" required>
         </div>
         <div class="form-group">
-            <label for="create-password">Password</label>
+            <label for="create-password">Пароль</label>
             <input type="password" id="create-password" name="create-password" required>
         </div>
         <div class="form-group">
-            <button type="button" onclick="createUser()">Create User</button>
+            <button type="button" onclick="createUser()">Добавить</button>
         </div>
 
-        <h3>Update User</h3>
+        <h3>Обновить пользователя</h3>
         <div class="form-group">
-            <label for="update-userid">User ID</label>
+            <label for="update-userid">Номер пользователя</label>
             <select id="update-userid" name="update-userid" required>
                 <option value="">Select User ID</option>
                 <!-- Options will be populated by JavaScript -->
             </select>
         </div>
         <div class="form-group">
-            <label for="update-email">Email</label>
+            <label for="update-email">Почта</label>
             <input type="email" id="update-email" name="update-email" required>
         </div>
         <div class="form-group">
-            <label for="update-fullname">Full Name</label>
+            <label for="update-fullname">Полное имя</label>
             <input type="text" id="update-fullname" name="update-fullname" required>
         </div>
         <div class="form-group">
-            <label for="update-password">Password</label>
+            <label for="update-password">Пароль</label>
             <input type="password" id="update-password" name="update-password" required>
         </div>
         <div class="form-group">
-            <button type="button" onclick="updateUser()">Update User</button>
+            <button type="button" onclick="updateUser()">Обновить</button>
         </div>
 
-        <h3>Delete User</h3>
+        <h3>Удалить пользователя</h3>
         <div class="form-group">
-            <label for="delete-userid">User ID</label>
+            <label for="delete-userid">Номер пользователя</label>
             <select id="delete-userid" name="delete-userid" required>
-                <option value="">Select User ID</option>
+                <option value="">Укажите номер пользователя</option>
                 <!-- Options will be populated by JavaScript -->
             </select>
         </div>
         <div class="form-group">
-            <button type="button" onclick="deleteUser()">Delete User</button>
+            <button type="button" onclick="deleteUser()">Удалить</button>
         </div>
 
         <div class="user-list">
-            <h3>Users</h3>
+            <h3>Пользователи</h3>
             <table>
                 <thead>
                     <tr>
-                        <th>ID</th>
-                        <th>Username</th>
-                        <th>Email</th>
-                        <th>Full Name</th>
-                        <th>Disabled</th>
+                        <th>Номер</th>
+                        <th>Имя</th>
+                        <th>Почта</th>
+                        <th>Полное имя</th>
+                        <th>Удален</th>
                     </tr>
                 </thead>
                 <tbody id="user-list-body">
