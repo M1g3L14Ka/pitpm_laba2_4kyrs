@@ -18,6 +18,7 @@ from datetime import datetime, timedelta, timezone
 # Создание объекта FastAPI
 app = FastAPI()
 
+# Настройка CORS
 origins = [
     "http://localhost.tiangolo.com",
     "https://localhost.tiangolo.com",
@@ -25,7 +26,6 @@ origins = [
     "http://localhost:8080",
 ]
 
-# Добавление CORS middleware
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -123,7 +123,8 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)], db: Se
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Не удалось проверить учетные данные",
-        headers={"WWW-Authenticate": "Bearer"}, )
+        headers={"WWW-Authenticate": "Bearer"},
+    )
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         username: str = payload.get("sub")
@@ -254,7 +255,8 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Неверное имя пользователя или пароль",
-            headers={"WWW-Authenticate": "Bearer"}, )
+            headers={"WWW-Authenticate": "Bearer"},
+        )
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
         data={"sub": user.username}, expires_delta=access_token_expires)
@@ -274,7 +276,7 @@ async def update_user(user_id: int, user_update: UserUpdate,
     if user_update.full_name:
         user.full_name = user_update.full_name
     if user_update.password:
-        user.hashed_password = fake_hash_password(user_update.password)
+        user.hashed_password = hash_password(user_update.password)
     if user_update.disabled is not None:
         user.disabled = user_update.disabled
     try:
@@ -307,5 +309,5 @@ async def register_user(user: UserCreate, current_user: Annotated[User, Depends(
 
 @app.get("/", response_class=HTMLResponse)
 async def get_client():
-    with open("static/index.html", "r") as file:
+    with open("static/index.html", "r", encoding="utf-8") as file:
         return file.read()

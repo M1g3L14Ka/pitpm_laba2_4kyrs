@@ -16,15 +16,14 @@ def test_get_users():
     assert response.status_code == 200
     data = response.json()
     assert len(data) > 0
-    assert data[0]["username"] == "string"
+    assert "username" in data[0]
+    assert "email" in data[0]
 
 
 def test_create_user():
     response = client.post(
         "/register/",
-
-        json={"username": "test", "email": "tester@mail.ru",
-              "full_name": "Test", "password": "12345"},
+        json={"username": "test", "email": "tester@mail.ru", "full_name": "Test", "password": "12345"},
     )
     assert response.status_code == 200
     data = response.json()
@@ -35,8 +34,7 @@ def test_create_user():
 def test_successful_registration():
     response = client.post(
         "/register/",
-        json={"username": "test", "email": "tester@mail.ru", "full_name": "Test",
-              "password": "12345"}
+        json={"username": "test", "email": "tester@mail.ru", "full_name": "Test", "password": "12345"}
     )
     assert response.status_code == 200
     data = response.json()
@@ -47,13 +45,11 @@ def test_successful_registration():
 def test_duplicate_registration():
     client.post(
         "/register/",
-        json={"username": "test", "email": "tester@mail.ru", "full_name": "Test",
-              "password": "12345"}
+        json={"username": "test", "email": "tester@mail.ru", "full_name": "Test", "password": "12345"}
     )
     response = client.post(
         "/register/",
-        json={"username": "test", "email": "tester@mail.ru", "full_name": "Test",
-              "password": "12345"}
+        json={"username": "test", "email": "tester@mail.ru", "full_name": "Test", "password": "12345"}
     )
     assert response.status_code == 400
 
@@ -61,8 +57,7 @@ def test_duplicate_registration():
 def test_successful_authentication():
     client.post(
         "/register/",
-        json={"username": "test", "email": "tester@mail.ru", "full_name": "Test",
-              "password": "12345"}
+        json={"username": "test", "email": "tester@mail.ru", "full_name": "Test", "password": "12345"}
     )
     response = client.post(
         "/token",
@@ -84,8 +79,7 @@ def test_failed_authentication():
 def test_expired_token():
     client.post(
         "/register/",
-        json={"username": "test", "email": "tester@mail.ru", "full_name": "Test",
-              "password": "12345"}
+        json={"username": "test", "email": "tester@mail.ru", "full_name": "Test", "password": "12345"}
     )
     response = client.post(
         "/token",
@@ -97,20 +91,10 @@ def test_expired_token():
     assert response.status_code == 401
 
 
-def test_get_users():
-    response = client.get("/users/")
-    assert response.status_code == 200
-    data = response.json()
-    assert len(data) > 0
-    assert "username" in data[0]
-    assert "email" in data[0]
-
-
 def test_get_current_user():
     client.post(
         "/register/",
-        json={"username": "test", "email": "tester@mail.ru", "full_name": "Test",
-              "password": "12345"}
+        json={"username": "test", "email": "tester@mail.ru", "full_name": "Test", "password": "12345"}
     )
     response = client.post(
         "/token",
@@ -127,8 +111,7 @@ def test_get_current_user():
 def test_update_user():
     client.post(
         "/register/",
-        json={"username": "test", "email": "tester@mail.ru", "full_name": "Test",
-              "password": "12345"}
+        json={"username": "test", "email": "tester@mail.ru", "full_name": "Test", "password": "12345"}
     )
     response = client.post(
         "/token",
@@ -148,8 +131,7 @@ def test_update_user():
 def test_update_user_invalid_data():
     client.post(
         "/register/",
-        json={"username": "test", "email": "tester@mail.ru", "full_name": "Test",
-              "password": "12345"}
+        json={"username": "test", "email": "tester@mail.ru", "full_name": "Test", "password": "12345"}
     )
     response = client.post(
         "/token",
@@ -175,8 +157,7 @@ def test_update_user_without_token():
 def test_delete_user():
     client.post(
         "/register/",
-        json={"username": "test", "email": "tester@mail.ru", "full_name": "Test",
-              "password": "12345"}
+        json={"username": "test", "email": "tester@mail.ru", "full_name": "Test", "password": "12345"}
     )
     response = client.post(
         "/token",
@@ -193,8 +174,7 @@ def test_delete_user():
 def test_delete_user_again():
     client.post(
         "/register/",
-        json={"username": "test", "email": "tester@mail.ru", "full_name": "Test",
-              "password": "12345"}
+        json={"username": "test", "email": "tester@mail.ru", "full_name": "Test", "password": "12345"}
     )
     response = client.post(
         "/token",

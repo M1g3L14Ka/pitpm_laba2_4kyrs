@@ -123,8 +123,8 @@
         <h3>Обновить пользователя</h3>
         <div class="form-group">
             <label for="update-userid">Номер пользователя</label>
-            <select id="update-userid" name="update-userid" required>
-                <option value="">Select User ID</option>
+            <select id="update-userid" name="update-userid" required onchange="populateUpdateForm()">
+                <option value="">Выберите номер пользователя</option>
                 <!-- Options will be populated by JavaScript -->
             </select>
         </div>
@@ -200,8 +200,8 @@
             // Populate the update and delete user select boxes
             const updateUserSelect = document.getElementById('update-userid');
             const deleteUserSelect = document.getElementById('delete-userid');
-            updateUserSelect.innerHTML = '<option value="">Select User ID</option>';
-            deleteUserSelect.innerHTML = '<option value="">Select User ID</option>';
+            updateUserSelect.innerHTML = '<option value="">Выберите номер пользователя</option>';
+            deleteUserSelect.innerHTML = '<option value="">Укажите номер пользователя</option>';
             users.forEach(user => {
                 const option = document.createElement('option');
                 option.value = user.id;
@@ -220,8 +220,6 @@
         const fullName = document.getElementById('create-fullname').value;
         const password = document.getElementById('create-password').value;
 
-        console.log('Creating user with:', { username, email, fullName, password });
-
         try {
             const response = await fetch('/users/', {
                 method: 'POST',
@@ -232,15 +230,15 @@
             });
 
             if (response.ok) {
-                console.log('User created successfully');
+                alert('Пользователь успешно создан');
                 fetchUsers();
             } else {
                 console.error('Failed to create user:', await response.text());
-                alert('Failed to create user');
+                alert('Не удалось создать пользователя');
             }
         } catch (error) {
             console.error('Error during user creation:', error);
-            alert('Failed to create user');
+            alert('Не удалось создать пользователя');
         }
     }
 
@@ -260,14 +258,15 @@
             });
 
             if (response.ok) {
+                alert('Пользователь успешно обновлен');
                 fetchUsers();
             } else {
                 console.error('Failed to update user:', await response.text());
-                alert('Failed to update user');
+                alert('Не удалось обновить пользователя');
             }
         } catch (error) {
             console.error('Error during user update:', error);
-            alert('Failed to update user');
+            alert('Не удалось обновить пользователя');
         }
     }
 
@@ -280,19 +279,38 @@
             });
 
             if (response.ok) {
+                alert('Пользователь успешно удален');
                 fetchUsers();
             } else {
                 console.error('Failed to delete user:', await response.text());
-                alert('Failed to delete user');
+                alert('Не удалось удалить пользователя');
             }
         } catch (error) {
             console.error('Error during user deletion:', error);
-            alert('Failed to delete user');
+            alert('Не удалось удалить пользователя');
+        }
+    }
+
+    async function populateUpdateForm() {
+        const userId = document.getElementById('update-userid').value;
+        if (!userId) return;
+
+        try {
+            const response = await fetch(`/users/${userId}`);
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const user = await response.json();
+            document.getElementById('update-email').value = user.email;
+            document.getElementById('update-fullname').value = user.full_name || '';
+            document.getElementById('update-password').value = ''; // Clear the password field
+        } catch (error) {
+            console.error('Failed to fetch user data:', error);
         }
     }
 
     // Initial fetch of users
     fetchUsers();
-</script>
+    </script>
 </body>
 </html>
