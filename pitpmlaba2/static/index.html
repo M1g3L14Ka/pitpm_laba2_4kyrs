@@ -230,15 +230,10 @@
             });
 
             if (response.ok) {
-                alert('Пользователь успешно создан');
                 fetchUsers();
-            } else {
-                console.error('Failed to create user:', await response.text());
-                alert('Не удалось создать пользователя');
             }
         } catch (error) {
             console.error('Error during user creation:', error);
-            alert('Не удалось создать пользователя');
         }
     }
 
@@ -258,15 +253,10 @@
             });
 
             if (response.ok) {
-                alert('Пользователь успешно обновлен');
                 fetchUsers();
-            } else {
-                console.error('Failed to update user:', await response.text());
-                alert('Не удалось обновить пользователя');
             }
         } catch (error) {
             console.error('Error during user update:', error);
-            alert('Не удалось обновить пользователя');
         }
     }
 
@@ -279,15 +269,10 @@
             });
 
             if (response.ok) {
-                alert('Пользователь успешно удален');
                 fetchUsers();
-            } else {
-                console.error('Failed to delete user:', await response.text());
-                alert('Не удалось удалить пользователя');
             }
         } catch (error) {
             console.error('Error during user deletion:', error);
-            alert('Не удалось удалить пользователя');
         }
     }
 
